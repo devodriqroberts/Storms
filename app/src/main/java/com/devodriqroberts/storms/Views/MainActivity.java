@@ -1,15 +1,23 @@
 package com.devodriqroberts.storms.Views;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.devodriqroberts.storms.R;
 import com.devodriqroberts.storms.Models.CurrentWeather;
+import com.devodriqroberts.storms.databinding.ActivityMainBinding;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,19 +36,27 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY = "441ab0b3be13f34c82e80dc9fe018506";
     private static final String TAG = MainActivity.class.getSimpleName();
     private CurrentWeather currentWeather;
-    private String forcastUrl;
-    private double latitude;
-    private double longitude;
+    private ImageView iconImageView;
+    private final double latitude = 42.3601;
+    private final double longitude = -71.0589;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        getForcast(latitude, longitude);
+    }
 
-        latitude = 42.3601;
-        longitude = -71.0589;
+    private void getForcast(double latitude, double longitude) {
+        final ActivityMainBinding binding = DataBindingUtil.setContentView(MainActivity.this, R.layout.activity_main);
 
-        forcastUrl = String.format(getString(R.string.darksky_url), KEY, latitude, longitude);
+        // Create link for Dark Sky message
+        TextView darkSky = findViewById(R.id.darkSkyAttribution);
+        darkSky.setMovementMethod(LinkMovementMethod.getInstance());
+
+        iconImageView = findViewById(R.id.iconImageView);
+
+
+        String forcastUrl = String.format(getString(R.string.darksky_url), KEY, latitude, longitude);
 
         if (isNetworkAvailable()) {
 
@@ -65,6 +81,30 @@ public class MainActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
 
                             currentWeather = getCurrentDetails(jsonData);
+
+                            final CurrentWeather displayWeather = new CurrentWeather(
+                                    currentWeather.getLocationLabel(),
+                                    currentWeather.getIcon(),
+                                    currentWeather.getTime(),
+                                    currentWeather.getTemperature(),
+                                    currentWeather.getHumidity(),
+                                    currentWeather.getPrecipProbability(),
+                                    currentWeather.getSummary(),
+                                    currentWeather.getTimeZone()
+                            );
+
+                            binding.setWeather(displayWeather);
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Drawable drawable = getResources().getDrawable(displayWeather.getIconId());
+                                    iconImageView.setImageDrawable(drawable);
+                                }
+                            });
+
+
+
                         } else {
                             alertUserAboutError();
                         }
@@ -118,6 +158,11 @@ public class MainActivity extends AppCompatActivity {
     private void alertUserAboutError() {
     AlertDialogFragment dialog = new AlertDialogFragment();
     dialog.show(getFragmentManager(), "error_dialog");
+    }
+
+    public void refreshOnClick(View view) {
+        Toast.makeText(this, "Refreshing Data", Toast.LENGTH_LONG).show();
+        getForcast(latitude, longitude);
     }
 
 }

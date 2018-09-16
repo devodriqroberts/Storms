@@ -10,19 +10,22 @@ public class CurrentWeather {
     private String locationLabel;
     private String icon;
     private long time;
-    private long temperature;
-    private long humidity;
-    private long precipProbability;
+    private double temperature;
+    private double humidity;
+    private double precipProbability;
     private String summary;
     private String timeZone;
+
+    public CurrentWeather() {
+    }
 
     public CurrentWeather(String locationLabel, String icon, long time, double temperature, double humidity, double precipProbability, String summary, String timeZone) {
         this.locationLabel = locationLabel;
         this.icon = icon;
         this.time = time;
-        this.temperature = (Math.round(temperature));
-        this.humidity = Math.round(humidity * 100);
-        this.precipProbability = (Math.round(precipProbability) * 100 );
+        this.temperature = temperature;
+        this.humidity = humidity;
+        this.precipProbability = precipProbability;
         this.summary = summary;
         this.timeZone = timeZone;
 
@@ -101,5 +104,9 @@ public class CurrentWeather {
 
     public String getSummary() {
         return summary;
+    }
+
+    public String getTimeZone() {
+        return timeZone;
     }
 }
