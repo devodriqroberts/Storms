@@ -5,7 +5,6 @@ import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
@@ -15,8 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.devodriqroberts.storms.Models.Current;
 import com.devodriqroberts.storms.R;
-import com.devodriqroberts.storms.Models.CurrentWeather;
 import com.devodriqroberts.storms.databinding.ActivityMainBinding;
 
 import org.json.JSONException;
@@ -35,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String KEY = "441ab0b3be13f34c82e80dc9fe018506";
     private static final String TAG = MainActivity.class.getSimpleName();
-    private CurrentWeather currentWeather;
+    private Current current;
     private ImageView iconImageView;
     private final double latitude = 42.3601;
     private final double longitude = -71.0589;
@@ -80,17 +79,17 @@ public class MainActivity extends AppCompatActivity {
                         Log.v(TAG, jsonData);
                         if (response.isSuccessful()) {
 
-                            currentWeather = getCurrentDetails(jsonData);
+                            current = getCurrentDetails(jsonData);
 
-                            final CurrentWeather displayWeather = new CurrentWeather(
-                                    currentWeather.getLocationLabel(),
-                                    currentWeather.getIcon(),
-                                    currentWeather.getTime(),
-                                    currentWeather.getTemperature(),
-                                    currentWeather.getHumidity(),
-                                    currentWeather.getPrecipProbability(),
-                                    currentWeather.getSummary(),
-                                    currentWeather.getTimeZone()
+                            final Current displayWeather = new Current(
+                                    current.getLocationLabel(),
+                                    current.getIcon(),
+                                    current.getTime(),
+                                    current.getTemperature(),
+                                    current.getHumidity(),
+                                    current.getPrecipProbability(),
+                                    current.getSummary(),
+                                    current.getTimeZone()
                             );
 
                             binding.setWeather(displayWeather);
@@ -118,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private CurrentWeather getCurrentDetails(String jsonData) throws JSONException {
+    private Current getCurrentDetails(String jsonData) throws JSONException {
         JSONObject forecast = new JSONObject(jsonData);
         JSONObject currently = forecast.getJSONObject("currently");
 
@@ -133,11 +132,11 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        currentWeather = new CurrentWeather("Alcatraz Island, CA", icon, time, temperature, humidity, precipProbability, summary, timezone);
+        current = new Current("Alcatraz Island, CA", icon, time, temperature, humidity, precipProbability, summary, timezone);
 
-        Log.d(TAG, currentWeather.getFormattedTime());
+        Log.d(TAG, current.getFormattedTime());
 
-        return currentWeather;
+        return current;
     }
 
     private boolean isNetworkAvailable() {
