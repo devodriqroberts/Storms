@@ -1,5 +1,7 @@
 package com.devodriqroberts.storms.Models;
 
+import java.util.ArrayList;
+
 public class Forecast {
     private Current current;
     private Hourly[] hourlyForecast;

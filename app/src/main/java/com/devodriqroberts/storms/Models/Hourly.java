@@ -5,14 +5,12 @@ public class Hourly {
     private String summary;
     private double temperature;
     private String icon;
-    private String timeZone;
 
-    public Hourly(long time, String summary, double temperature, String icon, String timeZone) {
+    public Hourly(long time, String summary, double temperature, String icon) {
         this.time = time;
         this.summary = summary;
         this.temperature = temperature;
         this.icon = icon;
-        this.timeZone = timeZone;
     }
 
     public long getTime() {
@@ -31,7 +29,4 @@ public class Hourly {
         return icon;
     }
 
-    public String getTimeZone() {
-        return timeZone;
-    }
 }
